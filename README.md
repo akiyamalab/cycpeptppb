@@ -7,7 +7,8 @@ The official implementation of the CycPeptPPB
 
 
 # Code
-- **EXAMPLE.ipynb** jupyter notebook with an example of prediction (trained weight required)
+- **EXAMPLE.ipynb** 
+  > jupyter notebook with an example of prediction (trained weight required)
 - **cut_ring.py** divide the main chain of the cyclic peptide into substructures
 - **generate_input.py** generate prediction model input feature map
-- - In the paper, we used descriptors computed from MOE software, but since MOE is a commercial software, CycPeptPPB used descriptors computed by rdkit
+  - In the paper, we used descriptors computed from MOE software, but since MOE is a commercial software, CycPeptPPB used descriptors computed by rdkit
