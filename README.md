@@ -13,4 +13,5 @@ The official implementation of the CycPeptPPB
   > divide the main chain of the cyclic peptide into substructures
 - **generate_input.py** 
   > generate prediction model input feature map
+  > 
   > In the paper, we used descriptors computed from MOE software, but since MOE is a commercial software, CycPeptPPB used descriptors computed by rdkit
