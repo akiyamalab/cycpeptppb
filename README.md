@@ -25,3 +25,6 @@ The official implementation of the CycPeptPPB
   > Draw a heatmap for Salience Score.
 - **get_output.py**
   > Make a prediction.
+
+# Pretrained weights
+- Pretrained weights are not available.
