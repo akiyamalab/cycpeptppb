@@ -1,6 +1,6 @@
 # CycPeptPPB
 
-The official implementation of the **CycPeptPPB**  
+The official implementation of the **CycPeptPPB**.  
 **CycPeptPPB** is a predictor of Plasma Protein Binding rate for cyclic peptide with high performance focusing on
 residue-level features and circularity.
 
@@ -8,9 +8,9 @@ residue-level features and circularity.
 <img width="400" alt="スクリーンショット 2021-09-16 4 47 07" src="https://user-images.githubusercontent.com/44156441/133499567-7307e375-0f48-42ac-b9af-740c30bc1748.png">
 
 # Requirements
-- python:  3.7.9
-- rdkit:  2020.03.1
-- chainer:  7.1.0
+- Python:  3.7.9
+- RDKit:  2020.03.1
+- Chainer:  7.1.0
 
 # Code
 - **EXAMPLE.ipynb** 
