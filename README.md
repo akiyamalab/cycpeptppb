@@ -12,12 +12,10 @@ The official implementation of the CycPeptPPB
 - **cut_ring.py** 
   > Divide the main chain of the cyclic peptide into substructures.
 - **generate_input.py** 
-  > Generate prediction model input feature map.
-  > 
+  > Generate prediction model input feature map.  
   > In the paper, we used descriptors computed from MOE software, but since MOE is a commercial software, CycPeptPPB used descriptors computed by rdkit.
 - **generate_model.py**
-  > Generate prediction model.
-  > 
+  > Generate prediction model.  
   > You need to add the trained weights file of the model as "model_weight/model.npz".
 - **draw_saliency_2Dmol.py**
   > Draw a heatmap for Salience Score.
