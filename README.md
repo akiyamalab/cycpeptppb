@@ -14,4 +14,8 @@ The official implementation of the CycPeptPPB
 - **generate_input.py** 
   > generate prediction model input feature map
   > 
-  > In the paper, we used descriptors computed from MOE software, but since MOE is a commercial software, CycPeptPPB used descriptors computed by rdkit
+  > in the paper, we used descriptors computed from MOE software, but since MOE is a commercial software, CycPeptPPB used descriptors computed by rdkit
+- **generate_model.py**
+  > generate prediction model
+  > 
+  > you need to add the trained weights file of the model as "model_weight/model.npz"
