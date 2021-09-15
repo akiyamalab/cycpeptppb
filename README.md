@@ -8,14 +8,18 @@ The official implementation of the CycPeptPPB
 
 # Code
 - **EXAMPLE.ipynb** 
-  > jupyter notebook with an example of prediction (trained weight is required)
+  > Jupyter notebook with an example of prediction (trained weight is required).
 - **cut_ring.py** 
-  > divide the main chain of the cyclic peptide into substructures
+  > Divide the main chain of the cyclic peptide into substructures.
 - **generate_input.py** 
-  > generate prediction model input feature map
+  > Generate prediction model input feature map.
   > 
-  > in the paper, we used descriptors computed from MOE software, but since MOE is a commercial software, CycPeptPPB used descriptors computed by rdkit
+  > In the paper, we used descriptors computed from MOE software, but since MOE is a commercial software, CycPeptPPB used descriptors computed by rdkit.
 - **generate_model.py**
-  > generate prediction model
+  > Generate prediction model.
   > 
-  > you need to add the trained weights file of the model as "model_weight/model.npz"
+  > You need to add the trained weights file of the model as "model_weight/model.npz".
+- **draw_saliency_2Dmol.py**
+  > Draw a heatmap for Salience Score.
+- **get_output.py**
+  > Make a prediction.
