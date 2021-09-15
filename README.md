@@ -1,1 +1,1 @@
-# cycpeptppb
+# CycPeptPPB
