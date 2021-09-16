@@ -175,7 +175,7 @@ def predict(smiles_list, fig_path='saliency_figures/'):
     # Dimension of the features to be used
     feature_num = 3
     # Maximum residue length 
-    max_len = 20
+    max_len = 15
     # using augmentation
     use_augmentation = True
     ################################################

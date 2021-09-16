@@ -42,14 +42,14 @@ def __standardization_descriptors(all_descriptors):
     # std_MolMR     = 14.313
     
     # v2
-    ave_PEOE_VSA6   = 11.096
-    std_PEOE_VSA6   = 12.369
+    ave_PEOE_VSA6   = 11.308605186884161
+    std_PEOE_VSA6   = 12.597012892251113
 
-    ave_MolLogP     = 0.2108
-    std_MolLogP     = 1.1130
+    ave_MolLogP     = 0.2177629032770479
+    std_MolLogP     = 1.1259929837682099
 
-    ave_EState_VSA3 = 4.4077
-    std_EState_VSA3 = 4.0930
+    ave_EState_VSA3 = 4.407030042420127
+    std_EState_VSA3 = 4.222676051519849
 
     ave_list = [ave_PEOE_VSA6, ave_MolLogP, ave_EState_VSA3]
     std_list = [std_PEOE_VSA6, std_MolLogP, std_EState_VSA3]
@@ -68,7 +68,7 @@ def __standardization_descriptors(all_descriptors):
 
 def __calc_substructure_descriptors(substructures_list):
     """
-    Zscoredで標準化
+    Zscored
     """
     descriptors_ = []
     for mols in substructures_list:
