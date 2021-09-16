@@ -162,7 +162,7 @@ def __summarize_saliency_score(aug_saliency, aug_nums, aug_table, feature_num, o
 
 
 
-def predict(smiles_list, fig_path='saliency_figures/'):
+def predict(smiles_list, fig_path='saliency_figures/', use_augmentation=True, use_CyclicConv=False):
     """
     It takes the input data (list of smiles) and returns:
     Predicted value of %PPB (however, predictions below lower_limit% and above upper_limit% are rounded), 
@@ -175,9 +175,7 @@ def predict(smiles_list, fig_path='saliency_figures/'):
     # Dimension of the features to be used
     feature_num = 3
     # Maximum residue length 
-    max_len = 15
-    # using augmentation
-    use_augmentation = True
+    max_len = 15    
     ################################################
 
 
@@ -186,7 +184,7 @@ def predict(smiles_list, fig_path='saliency_figures/'):
 
     
     # make model
-    model = generate_model.__generate_prediction_model(feature_num=feature_num, weight_path="model_weight/model.npz")
+    model = generate_model.__generate_prediction_model(feature_num=feature_num, use_augmentation=use_augmentation, use_CyclicConv=use_CyclicConv, weight_path="model_weight/model.npz")
     
     
     aug_pred, aug_saliency = __perform_prediction(model, aug_maps)
