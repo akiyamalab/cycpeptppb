@@ -4,8 +4,7 @@ The official implementation of the **CycPeptPPB**.
 **CycPeptPPB** is a predictor of Plasma Protein Binding rate for cyclic peptide with high performance focusing on
 residue-level features and circularity.
 
-<img width="400" alt="スクリーンショット 2021-09-16 4 46 08" src="https://user-images.githubusercontent.com/44156441/133499447-01b83422-20f2-4ce3-846c-2577f7ce5d47.png">
-<img width="400" alt="スクリーンショット 2021-09-16 4 47 07" src="https://user-images.githubusercontent.com/44156441/133499567-7307e375-0f48-42ac-b9af-740c30bc1748.png">
+<img width="881" alt="スクリーンショット 2021-09-17 4 59 32" src="https://user-images.githubusercontent.com/44156441/133677917-80eda706-e5cd-462c-baea-150911556ede.png">
 
 # Requirements
 - Python:  3.7.9
