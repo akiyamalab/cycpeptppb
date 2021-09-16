@@ -27,7 +27,7 @@ residue-level features and circularity.
 - **draw_saliency_2Dmol.py**
   > Draw a heatmap for Salience Score.
 - **get_output.py**
-  > Make a prediction.
+  > Make a prediction.  
   > You can change the variables *use_augmentation*(=True) and *use_CyclicConv*(=False) to specify the model to use.
 
 # Pretrained weights
