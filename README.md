@@ -45,3 +45,6 @@ residue-level features and circularity.
   - CycPeptPPB model 1 (CyclicConv):             MAE=, R=.
   - CycPeptPPB model 2 (Augmentated 1DCNN):      MAE=8.86, R=0.68.
   - CycPeptPPB model 3 (Augmentated CyclicConv): MAE=, R=.
+
+# Contact
+- Jianan Li: li@bi.c.titech.ac.jp
