@@ -7,7 +7,7 @@ import pandas as pd
 
         
     
-def __perform_prediction(model, aug_maps):
+def __perform_prediction(model, aug_maps, aug_nums, aug_table, use_CyclicConv=False):
     """
     Original output of the model: Predicted value of %PPB, calculated Saliency Score.
     """
@@ -17,29 +17,36 @@ def __perform_prediction(model, aug_maps):
     
 #     with chainer.using_config('train', False), chainer.using_config('enable_backprop', False):
     with chainer.using_config('train', False):
-        outputs = model(inputs)
+        if use_CyclicConv:
+            outputs = model(inputs, aug_nums, aug_table)
+        else:
+            outputs = model(inputs)
         aug_pred = outputs.data
-    
-    target_var = inputs
-    target_var.grad = None 
-    
-    model.cleargrads()
-    
-#     output_var = outputs
-    output_var = chainer.functions.sum(outputs)
-    output_var.backward(retain_grad=False)
-    
-    aug_saliency = target_var.grad
+
+
+    if not use_CyclicConv:
+        target_var = inputs
+        target_var.grad = None 
         
-    # Saliency Score  
-    ##################################################################
-    aug_saliency = np.abs(aug_saliency)
-#     min_ = aug_saliency.min(axis=None, keepdims=True)
-#     max_ = aug_saliency.max(axis=None, keepdims=True)
-#     aug_saliency = (aug_saliency - min_) / (max_ - min_)
-#     aug_saliency = aug_saliency / max_
-    ##################################################################
-    
+        model.cleargrads()
+        
+    #     output_var = outputs
+        output_var = chainer.functions.sum(outputs)
+        output_var.backward(retain_grad=False)
+        
+        aug_saliency = target_var.grad
+            
+        # Saliency Score  
+        ##################################################################
+        aug_saliency = np.abs(aug_saliency)
+    #     min_ = aug_saliency.min(axis=None, keepdims=True)
+    #     max_ = aug_saliency.max(axis=None, keepdims=True)
+    #     aug_saliency = (aug_saliency - min_) / (max_ - min_)
+    #     aug_saliency = aug_saliency / max_
+        ##################################################################
+    else:
+        aug_saliency = np.array([])
+        
     return aug_pred, aug_saliency
 
 
@@ -138,11 +145,12 @@ def __summarize_saliency_score(aug_saliency, aug_nums, aug_table, feature_num, o
     whole_saliency = []
 
     for number_pep in range(len(aug_nums)):
+        nums_now = aug_nums[number_pep]
         aug_table_now = aug_table[number_pep]
         aug_saliency_now = aug_saliency[number_pep]
         whole_saliency_now = {}
 
-        for i in range(aug_nums[number_pep]):
+        for i in range(nums_now):
             tmp_index = aug_table_now[i]
             if output_format == 1:
                 whole_saliency_now[tmp_index] = aug_saliency_now[:, i].sum()
@@ -153,7 +161,7 @@ def __summarize_saliency_score(aug_saliency, aug_nums, aug_table, feature_num, o
         for i in range(nums_now):
             tmp_.append(whole_saliency_now[i])        
         
-        whole_saliency.appned(tmp_)
+        whole_saliency.append(tmp_)
     # list 
     return whole_saliency
 
@@ -162,7 +170,7 @@ def __summarize_saliency_score(aug_saliency, aug_nums, aug_table, feature_num, o
 
 
 
-def predict(smiles_list, fig_path='saliency_figures/', use_augmentation=True, use_CyclicConv=False):
+def predict(smiles_list, fig_path='saliency_figures/', use_augmentation=True, use_CyclicConv=False, weight_path="model_weight/model.npz"):
     """
     It takes the input data (list of smiles) and returns:
     Predicted value of %PPB (however, predictions below lower_limit% and above upper_limit% are rounded), 
@@ -182,30 +190,38 @@ def predict(smiles_list, fig_path='saliency_figures/', use_augmentation=True, us
     # generate input
     aug_maps, aug_nums, aug_index, aug_table, substructures_smiles, mapping_list, signed_mol_list = generate_input.__make_up_CNN_input(smiles_list, feature_num=feature_num, max_len=max_len, use_augmentation=use_augmentation)
 
-    
     # make model
-    model = generate_model.__generate_prediction_model(feature_num=feature_num, use_augmentation=use_augmentation, use_CyclicConv=use_CyclicConv, weight_path="model_weight/model.npz")
+    model = generate_model.__generate_prediction_model(feature_num=feature_num, use_augmentation=use_augmentation, use_CyclicConv=use_CyclicConv, weight_path=weight_path)
     
     
-    aug_pred, aug_saliency = __perform_prediction(model, aug_maps)
+    aug_pred, aug_saliency = __perform_prediction(model, aug_maps, aug_nums, aug_table, use_CyclicConv=use_CyclicConv)
 
 
     if use_augmentation:
         aug_pred = __calculate_average_predicted_value_of_replicas(aug_pred, aug_index)
-        saliency = __summarize_saliency_score_of_replicas(aug_saliency, aug_nums, aug_index, aug_table, feature_num=feature_num, output_format=1)
+        if not use_CyclicConv:
+            saliency = __summarize_saliency_score_of_replicas(aug_saliency, aug_nums, aug_index, aug_table, feature_num=feature_num, output_format=1)
+        else:
+            saliency = np.array([])
     else: 
-        saliency = __summarize_saliency_score(aug_saliency, aug_nums, aug_table, feature_num=feature_num, output_format=1)  
+        if not use_CyclicConv:
+            saliency = __summarize_saliency_score(aug_saliency, aug_nums, aug_table, feature_num=feature_num, output_format=1)  
+        else:
+            saliency = np.array([])
 
 
     # sacling
     pred = __scaling_predicted_values(aug_pred)   
 
 
-    # draw 2D mol 
-    draw_saliency_2Dmol.__visualization_of_saliency_score(fig_path, signed_mol_list, mapping_list, saliency)
+    if not use_CyclicConv:
+        # draw 2D mol 
+        draw_saliency_2Dmol.__visualization_of_saliency_score(fig_path, signed_mol_list, mapping_list, saliency)
 
-    # color of substructures
-    saliency_color_list = draw_saliency_2Dmol.__get_color_of_saliency_score(saliency)
+        # color of substructures
+        saliency_color_list = draw_saliency_2Dmol.__get_color_of_saliency_score(saliency)
+    else:
+        saliency_color_list = np.array([])
     
 
     return pred, substructures_smiles, saliency, saliency_color_list

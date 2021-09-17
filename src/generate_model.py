@@ -12,12 +12,12 @@ def __generate_1DCNN_model(feature_num, best_trial):
     """
     #############################################
     num_layer = best_trial['params_num_layer']
-    num_linear = best_trial['params_num_linear']
+    num_linear = 2
     conv_units = [int(best_trial['params_conv_units'+str(i)]) for i in range(best_trial['params_num_layer'])]
     k_size = 3
     pad_size = int(best_trial['params_pad_size'])
     activation_name = best_trial['params_activation'] 
-    linear_units = [int(best_trial['params_linear_units'+str(i)]) for i in range(best_trial['params_num_linear'])]
+    linear_units = [int(best_trial['params_linear_units'+str(i)]) for i in range(2)]
     pooling_name = best_trial['params_pooling']
     #############################################
         
@@ -64,8 +64,9 @@ def __generate_1DCNN_model(feature_num, best_trial):
 
 
 
-# CyclicConv
-def pre(data, residue_count, number):
+
+
+def pre(data, residue_count, number, max_len=15):
     list_ = []
     for i in range(len(data)):
         x = data[i]
@@ -84,8 +85,8 @@ def pre(data, residue_count, number):
             else:
                 if (number_now == -1) and (number_next != -1):
                     pad_left = j
-                    if j+residue_ == max_len-1:
-                        pad_right = max_len
+                    if j+residue_ == 14:
+                        pad_right = 15
                         break
                 elif (number_now != -1) and (number_next == -1):
                     pad_right = j+1
@@ -96,25 +97,27 @@ def pre(data, residue_count, number):
         mid_ = x[:,pad_left+1:pad_right]
         mid_ = chainer.functions.concat([mid_[:,-1:], mid_, mid_[:,:1]], axis=1)
 
+        # concat
         tmp = chainer.functions.concat([left_, mid_, right_], axis=1)
 
         list_.append(tmp.data) 
     list_ = np.array(list_)
-    return Variable(list_) 
-    
-    
+    return chainer.Variable(list_) 
+
+
+
 
 class CyclicConv(chainer.Chain):
-    def __init__(self, num_layer, num_linear, conv_units, linear_units, k_size, pad_size, activation_name, pooling_name):
+    def __init__(self, num_layer, activation_name, conv_units, k_size, pad_size, linear_units, pooling_name, feature_num=3):
         super().__init__()
         with self.init_scope():
             self.num_layer = num_layer
-            self.num_linear = num_linear
             self.activation_name = activation_name
             self.pooling_name = pooling_name
+            self.feature_num = feature_num
             
             # layer_0
-            self.conv0 = L.Convolution1D(in_channels=feature_num, out_channels=conv_units[0], ksize=k_size, pad=pad_size)    
+            self.conv0 = L.Convolution1D(in_channels=self.feature_num, out_channels=conv_units[0], ksize=k_size, pad=pad_size)    
             self.bnconv0 = L.BatchNormalization(conv_units[0])    
             if activation_name == 'Swish':
                 self.sconv0 = L.Swish(None)
@@ -143,34 +146,22 @@ class CyclicConv(chainer.Chain):
                 self.bnconv4 = L.BatchNormalization(conv_units[4]) 
                 if activation_name == 'Swish':
                     self.sconv4 = L.Swish(None)
-
-
+        
             # dense
             self.l0 = L.Linear(None, linear_units[0]) 
+            self.l1 = L.Linear(None, linear_units[1]) 
+            self.out = L.Linear(None, 1) 
             self.bnl0 = L.BatchNormalization(linear_units[0])
+            self.bnl1 = L.BatchNormalization(linear_units[1])
             if activation_name == 'Swish':
                 self.sl0 = L.Swish(None)
-            
-            if num_linear >= 2:
-                self.l1 = L.Linear(None, linear_units[1])
-                self.bnl1 = L.BatchNormalization(linear_units[1])
-                if activation_name == 'Swish':
-                    self.sl1 = L.Swish(None)
-            
-            if num_linear >= 3:
-                self.l2 = L.Linear(None, linear_units[2])
-                self.bnl2 = L.BatchNormalization(linear_units[2])
-                if activation_name == 'Swish':
-                    self.sl2 = L.Swish(None)
-            
-            self.out = L.Linear(None, 1) 
+                self.sl1 = L.Swish(None)
             
 
     def forward(self, x, residue_count, number):
 
         h = pre(x, residue_count, number)
         h = self.bnconv0(self.conv0(h))
-    
         if self.activation_name == 'Swish':
             h = self.sconv0(h)
         elif self.activation_name == 'ReLU':
@@ -217,13 +208,11 @@ class CyclicConv(chainer.Chain):
                 h = F.relu(h)
             elif self.activation_name == 'Leaky_ReLU':
                 h = F.leaky_relu(h)
-                
             
         if self.pooling_name == 'Max':
             h = F.max_pooling_1d(h, ksize=2)
         elif self.pooling_name == 'Average':
             h = F.average_pooling_1d(h, ksize=2)
-        
         
         h = self.bnl0(self.l0(h))
         if self.activation_name == 'Swish':
@@ -233,28 +222,18 @@ class CyclicConv(chainer.Chain):
         elif self.activation_name == 'Leaky_ReLU':
             h = F.leaky_relu(h)
         
-        if self.num_linear >= 2:
-            h = self.bnl1(self.l1(h))
-            if self.activation_name == 'Swish':
-                h = self.sl1(h)
-            elif self.activation_name == 'ReLU':
-                h = F.relu(h)
-            elif self.activation_name == 'Leaky_ReLU':
-                h = F.leaky_relu(h)
-                
-        if self.num_linear >= 3:
-            h = self.bnl2(self.l2(h))
-            if self.activation_name == 'Swish':
-                h = self.sl2(h)
-            elif self.activation_name == 'ReLU':
-                h = F.relu(h)
-            elif self.activation_name == 'Leaky_ReLU':
-                h = F.leaky_relu(h)      
-        
+        h = self.bnl1(self.l1(h))
+        if self.activation_name == 'Swish':
+            h = self.sl1(h)
+        elif self.activation_name == 'ReLU':
+            h = F.relu(h)
+        elif self.activation_name == 'Leaky_ReLU':
+            h = F.leaky_relu(h)
             
         h = self.out(h)
-
+        
         return h
+
 
 
 def __generate_CyclicConv_model(feature_num, best_trial):
@@ -262,27 +241,17 @@ def __generate_CyclicConv_model(feature_num, best_trial):
     generate CyclicConv model
     """
     #############################################
-    num_layer = trial['params_num_layer']
-    num_linear = trial['params_num_linear']
-    conv_units = [int(trial['params_conv_units'+str(i)]) for i in range(trial['params_num_layer'])]
-    linear_units = [int(trial['params_linear_units'+str(i)]) for i in range(trial['params_num_linear'])]
+    num_layer = best_trial['params_num_layer']
+    conv_units = [int(best_trial['params_conv_units'+str(i)]) for i in range(best_trial['params_num_layer'])]
+    linear_units = [int(best_trial['params_linear_units'+str(i)]) for i in range(2)]
     k_size = 3
     pad_size = 0  
-    activation_name = trial['params_activation'] 
-    pooling_name = trial['params_pooling']
+    activation_name = best_trial['params_activation'] 
+    pooling_name = best_trial['params_pooling']
     #############################################
-    
-    if activation_name == 'ReLU':
-        activation = F.relu
-    elif activation_name == 'Leaky_ReLU':
-        activation = F.leaky_relu
 
-    if pooling_name == 'Max':
-        pooling_layer = F.max_pooling_1d
-    elif pooling_name == 'Average':
-        pooling_layer = F.average_pooling_1d
 
-    return CyclicConv(num_layer, num_linear, conv_units, linear_units, k_size, pad_size, activation_name, pooling_name)
+    return CyclicConv(num_layer, activation_name, conv_units, k_size, pad_size, linear_units, pooling_name)
 
 
 
@@ -299,27 +268,63 @@ def __generate_prediction_model(feature_num=3,
     """
     if use_augmentation:
         if use_CyclicConv:
-            best_trial={}
-        else:
+            print('The prediction model you have selected is: CycPeptPPB model 3 (Augmentated CyclicConv).')
             best_trial={
-                        'params_activation': 'ReLU',
-                        'params_conv_units0': 55,
-                        'params_conv_units1': 37,
-                        'params_conv_units2': 174,
-                        'params_conv_units3': 204,
-                        'params_linear_units0': 166,
-                        'params_linear_units1': 33,
-                        'params_linear_units2': 43,
-                        'params_num_layer': 4,
-                        'params_num_linear': 3,
-                        'params_pad_size': 0,
-                        'params_pooling': 'Average'
-                        }
+                        # number                                              43
+                        'params_activation':                              'Swish',
+                        'params_batch_size':                                 1800,
+                        'params_conv_units0':                               117.0,
+                        'params_conv_units1':                                48.0,
+                        'params_linear_units0':                             122.0,
+                        'params_linear_units1':                             139.0,
+                        'params_num_layer':                                     2,
+                        'params_pooling':                                'Average'
+            }
+        else:
+            print('The prediction model you have selected is: CycPeptPPB model 2 (Augmentated 1DCNN).')
+            best_trial={
+                        # number  78
+                        'params_activation':                      'Leaky_ReLU',
+                        'params_conv_units0':                            162.0,
+                        'params_conv_units1':                             79.0,
+                        'params_conv_units2':                            111.0,
+                        'params_conv_units3':                            157.0,
+                        'params_linear_units0':                          135.0,
+                        'params_linear_units1':                          185.0,
+                        'params_num_layer':                                  4,
+                        'params_pad_size':                                   1,
+                        'params_pooling':                            'Average'
+            }
     else:
         if use_CyclicConv:
-            best_trial={}
+            print('The prediction model you have selected is: CycPeptPPB model 1 (CyclicConv).')
+            best_trial={
+                        # number                                          96
+                        'params_activation':                           'Swish',
+                        'params_batch_size':                               50,
+                        'params_conv_units0':                           125.0,
+                        'params_conv_units1':                           237.0,
+                        'params_linear_units0':                          68.0,
+                        'params_linear_units1':                          37.0,
+                        'params_num_layer':                                 2,
+                        'params_pooling':                            'Average',
+            }
         else:
-            best_trial={}
+            print('The prediction model you have selected is: Baseline model (1DCNN).')
+            best_trial={
+                        # number 80
+                        'params_activation':                            'ReLU',
+                        'params_conv_units0':                            143.0,
+                        'params_conv_units1':                             83.0,
+                        'params_conv_units2':                             72.0,
+                        'params_conv_units3':                            225.0,
+                        'params_conv_units4':                            221.0,
+                        'params_linear_units0':                           94.0,
+                        'params_linear_units1':                          130.0,
+                        'params_num_layer':                                  5,
+                        'params_pad_size':                                   0,
+                        'params_pooling':                                 'Max',
+            }
 
     if use_CyclicConv:
         model = __generate_CyclicConv_model(feature_num, best_trial)
