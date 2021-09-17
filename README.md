@@ -28,7 +28,13 @@ residue-level features and circularity.
   > Draw a heatmap for Salience Score.
 - **get_output.py**
   > Make a prediction.  
-  > You can change the variables *use_augmentation*(=True) and *use_CyclicConv*(=False) to specify the model to use.
+  > You can change the variables ***use_augmentation***(=True) and ***use_CyclicConv***(=False) to specify the model to use.
+  > + *use_augmentation*=False, *use_CyclicConv*=False → Baseline model (1DCNN)  
+  > + *use_augmentation*=False, *use_CyclicConv*=True  → CycPeptPPB model 1 (CyclicConv)
+  > + *use_augmentation*=True, *use_CyclicConv*=False  → CycPeptPPB model 2 (Augmentated 1DCNN)
+  > + *use_augmentation*=True, *use_CyclicConv*=True   → CycPeptPPB model 3 (Augmentated CyclicConv)
+
+
 
 # Pretrained weights
 - Pretrained weights are not available.
