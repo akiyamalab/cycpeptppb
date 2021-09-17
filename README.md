@@ -15,7 +15,7 @@ residue-level features and circularity.
 - **EXAMPLE.ipynb** 
   > Jupyter notebook with an example of prediction (trained weight is required).
 - **cut_ring.py** 
-  > Divide the main chain of the cyclic peptide into substructures.
+  > Divide the main chain of the cyclic peptide into substructures.  
   > The target bonds of division are amide bonds and disulfide bonds.
 - **generate_input.py** 
   > Generate prediction model input feature map.  
