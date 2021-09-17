@@ -19,8 +19,10 @@ residue-level features and circularity.
 - **generate_input.py** 
   > Generate prediction model input feature map.  
   > In the paper, we used descriptors computed from MOE software, but since MOE is a commercial software, CycPeptPPB implementation on this site used descriptors computed by RDKit.  
-  > MOE descriptors used for the model in the paper: logP(o/w), PEOE_VSA-1, logS.  
-  > RDKit descriptors used in the CycPeptPPB implementation on this site: MolLogP, PEOE_VSA6, EState_VSA3.  
+  > MOE descriptors used for the model in the paper: 
+  > + logP(o/w), PEOE_VSA-1, logS.  
+  > RDKit descriptors used in the CycPeptPPB implementation on this site: 
+  > + MolLogP, PEOE_VSA6, EState_VSA3.  
 - **generate_model.py**
   > Generate prediction model.  
   > You need to add the trained weights file of the model as "model_weight/model.npz".
