@@ -26,7 +26,8 @@ residue-level features and circularity.
   > Generate prediction model.  
   > You need to add the trained weights file of the model such as "model_weight/model.npz".
 - **draw_saliency_2Dmol.py**
-  > Draw a 2D molecular heatmap of Saliency Score.
+  > Draw a 2D molecular heatmap of Saliency Score.  
+  > This function is only feasible when CyclicConv is not used (Baseline model & CycPeptPPB model 2).
 - **get_output.py**
   > Make a prediction.  
   > You can change the variables ***use_augmentation***(=True) and ***use_CyclicConv***(=False) to specify the model to use.
