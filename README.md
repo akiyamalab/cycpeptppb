@@ -16,6 +16,7 @@ residue-level features and circularity.
   > Jupyter notebook with an example of prediction (trained weight is required).
 - **cut_ring.py** 
   > Divide the main chain of the cyclic peptide into substructures.
+  > The target bonds of division are amide bonds and disulfide bonds.
 - **generate_input.py** 
   > Generate prediction model input feature map.  
   > In the paper, we used descriptors computed from MOE software, but since MOE is a commercial software, CycPeptPPB implementation on this site used descriptors computed by RDKit.  
@@ -25,7 +26,7 @@ residue-level features and circularity.
   > Generate prediction model.  
   > You need to add the trained weights file of the model such as "model_weight/model.npz".
 - **draw_saliency_2Dmol.py**
-  > Draw a heatmap for Salience Score.
+  > Draw a 2D molecular heatmap of Saliency Score.
 - **get_output.py**
   > Make a prediction.  
   > You can change the variables ***use_augmentation***(=True) and ***use_CyclicConv***(=False) to specify the model to use.
