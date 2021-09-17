@@ -23,7 +23,7 @@ residue-level features and circularity.
   > RDKit descriptors used in the CycPeptPPB implementation on this site: MolLogP, PEOE_VSA6, EState_VSA3.  
 - **generate_model.py**
   > Generate prediction model.  
-  > You need to add the trained weights file of the model as "model_weight/model.npz".
+  > You need to add the trained weights file of the model such as "model_weight/model.npz".
 - **draw_saliency_2Dmol.py**
   > Draw a heatmap for Salience Score.
 - **get_output.py**
