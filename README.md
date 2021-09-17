@@ -34,8 +34,8 @@ residue-level features and circularity.
 - Pretrained weights are not available.
 
 # Prediction performance
-- Prediction accuracy of external test data (DrugBank dataset).
-- MOE descriptors used in the paper:
+- Prediction accuracy of external test data (DrugBank dataset):
+- MOE descriptors version we used in the paper:
   - Baseline model (1DCNN): MAE=6.55, R=0.89.
   - CycPeptPPB model 1 (CyclicConv): MAE=15.60, R=0.66.
   - CycPeptPPB model 2 (Augmentated 1DCNN): **MAE=4.79, R=0.92.**
