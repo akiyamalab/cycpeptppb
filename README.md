@@ -1,4 +1,5 @@
 # CycPeptPPB
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-orange.svg)](LICENSE)
 
 The official implementation of the **CycPeptPPB**.  
 **CycPeptPPB** is a predictor of Plasma Protein Binding rate for cyclic peptide with high performance focusing on
@@ -48,6 +49,11 @@ residue-level features and circularity.
   - CycPeptPPB model 1 (CyclicConv): MAE=15.60, R=0.66.
   - CycPeptPPB model 2 (Augmentated 1DCNN): **MAE=4.79, R=0.92.**
   - CycPeptPPB model 3 (Augmentated CyclicConv): MAE=8.97, R=0.87.
+
+
+## Reference
+If you find CycPeptPPB useful, please consider citing this publication;
+- Li J, Yanagisawa K, Yoshikawa Y, Ohue M, Akiyama Y. **Plasma protein binding prediction focusing on residue-level features and circularity of cyclic peptides by deep learning**. _Bioinformatics_, xx: xxxx, 2021. (in press)
 
 # Contact
 - Jianan Li: li@bi.c.titech.ac.jp
