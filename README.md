@@ -53,7 +53,7 @@ residue-level features and circularity.
 
 ## Reference
 If you find CycPeptPPB useful, please consider citing this publication;
-- Li J, Yanagisawa K, Yoshikawa Y, Ohue M, Akiyama Y. **Plasma protein binding prediction focusing on residue-level features and circularity of cyclic peptides by deep learning**. _Bioinformatics_, xx: xxxx, 2021. (in press)
+- Li J, Yanagisawa K, Yoshikawa Y, Ohue M, Akiyama Y. [**Plasma protein binding prediction focusing on residue-level features and circularity of cyclic peptides by deep learning**](https://doi.org/10.1093/bioinformatics/btab726). _Bioinformatics_, xx: xxxx, 2021. doi:10.1093/bioinformatics/btab726 (in press)
 
 # Contact
 - Jianan Li: li@bi.c.titech.ac.jp
